@@ -52,7 +52,9 @@ function App() {
         setWin(false)
       } else if (guess.length === word.length) {
         if (words.includes(guess)) {
-          setAttempt(attempt + 1)
+          if (attempt < MAX_ATTEMPT) {
+            setAttempt(attempt + 1)
+          }
           if (guess === word) {
             setWin(true)
           }

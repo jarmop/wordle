@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import './App.css'
-import wordsByLength from './words.json'
+import words from './words.json'
 
-const WORD_LENGTH = 5
 const MAX_ATTEMPT = 5
-const defaultWord =
-  wordsByLength[WORD_LENGTH][getRandomInt(0, wordsByLength[WORD_LENGTH].length)]
+const defaultWord = words[getRandomInt(0, words.length)]
 const aplhabet = 'abcdefghijklmnopqrstuvwxyz'
 const defaultGuesses = [
   ['', '', '', '', ''],
@@ -49,16 +47,12 @@ function App() {
 
       if (event.key === 'Enter') {
         if (win) {
-          setWord(
-            wordsByLength[WORD_LENGTH][
-              getRandomInt(0, wordsByLength[WORD_LENGTH].length)
-            ]
-          )
+          setWord(words[getRandomInt(0, words.length)])
           setGuesses(defaultGuesses)
           setAttempt(0)
           setWin(false)
         } else if (guess.length === word.length) {
-          if (wordsByLength[WORD_LENGTH].includes(guess)) {
+          if (words.includes(guess)) {
             setAttempt(attempt + 1)
             if (guess === word) {
               setWin(true)
@@ -96,14 +90,16 @@ function App() {
 
   const giveUp = (event: any) => {
     const triggeredWithEnter = event.clientX === 0
-    if (win || attempt === MAX_ATTEMPT || triggeredWithEnter) {
+    if (win || attempt > MAX_ATTEMPT || triggeredWithEnter) {
       return
     }
 
     setGuesses(
       guesses.map((value, i) => (i === attempt ? word.split('') : value))
     )
-    setAttempt(attempt + 1)
+    if (attempt < MAX_ATTEMPT) {
+      setAttempt(attempt + 1)
+    }
     setWin(true)
   }
 

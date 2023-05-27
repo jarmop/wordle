@@ -41,48 +41,50 @@ function App() {
     characters.push(character)
   }
 
-  useEffect(() => {
-    const keydownListener = (event: KeyboardEvent) => {
-      let guess = guesses[attempt].join('')
+  const keyHandler = (key: string) => {
+    let guess = guesses[attempt].join('')
 
-      if (event.key === 'Enter') {
-        if (win) {
-          setWord(words[getRandomInt(0, words.length)])
-          setGuesses(defaultGuesses)
-          setAttempt(0)
-          setWin(false)
-        } else if (guess.length === word.length) {
-          if (words.includes(guess)) {
-            setAttempt(attempt + 1)
-            if (guess === word) {
-              setWin(true)
-            }
-          } else {
-            alert('Not in the word list')
+    if (key === 'Enter') {
+      if (win) {
+        setWord(words[getRandomInt(0, words.length)])
+        setGuesses(defaultGuesses)
+        setAttempt(0)
+        setWin(false)
+      } else if (guess.length === word.length) {
+        if (words.includes(guess)) {
+          setAttempt(attempt + 1)
+          if (guess === word) {
+            setWin(true)
           }
+        } else {
+          alert('Not in the word list')
         }
-
-        return
       }
 
-      if (event.key === 'Backspace') {
-        if (guess.length > 0) {
-          guess = guess.slice(0, -1)
-        }
-      } else if (event.key.length === 1 && guess.length < word.length) {
-        guess += event.key
-      }
-
-      setGuesses(
-        guesses.map((value, i) =>
-          i === attempt
-            ? ['', '', '', '', ''].map((char, i) =>
-                guess[i] !== undefined ? guess[i] : char
-              )
-            : value
-        )
-      )
+      return
     }
+
+    if (key === 'Backspace') {
+      if (guess.length > 0) {
+        guess = guess.slice(0, -1)
+      }
+    } else if (key.length === 1 && guess.length < word.length) {
+      guess += key
+    }
+
+    setGuesses(
+      guesses.map((value, i) =>
+        i === attempt
+          ? ['', '', '', '', ''].map((char, i) =>
+              guess[i] !== undefined ? guess[i] : char
+            )
+          : value
+      )
+    )
+  }
+
+  useEffect(() => {
+    const keydownListener = (event: KeyboardEvent) => keyHandler(event.key)
     window.addEventListener('keydown', keydownListener)
 
     return () => window.removeEventListener('keydown', keydownListener)
@@ -129,22 +131,42 @@ function App() {
           ))}
         </div>
         <div>
-          <button onClick={giveUp} style={{ margin: '2px 20px' }}>
-            Give up
-          </button>
+          <div>
+            <button onClick={giveUp} style={{ margin: '2px 20px' }}>
+              Give up
+            </button>
+          </div>
         </div>
       </div>
       <div className="Alphabet">
         {aplhabet.split('').map((char) => {
-          const className =
-            'Character ' + (wrongCharacters.includes(char) ? 'used' : 'unused')
+          const wrongCharacter = wrongCharacters.includes(char)
+          const className = 'Character alpha' + (wrongCharacter ? ' wrong' : '')
 
           return (
-            <div key={char} className={className}>
+            <div
+              key={char}
+              className={className}
+              onClick={() => !wrongCharacter && keyHandler(char)}
+            >
               {char}
             </div>
           )
         })}
+      </div>
+      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+        <button
+          onClick={() => keyHandler('Backspace')}
+          style={{ margin: '20px', width: '100px', height: '40px' }}
+        >
+          Backspace
+        </button>
+        <button
+          onClick={() => keyHandler('Enter')}
+          style={{ margin: '20px', width: '100px', height: '40px' }}
+        >
+          Enter
+        </button>
       </div>
     </div>
   )

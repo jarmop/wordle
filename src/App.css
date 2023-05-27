@@ -1,5 +1,6 @@
 .App {
   margin: 10px;
+  width: 310px;
 }
 
 .Word {
@@ -8,7 +9,6 @@
 
 .Alphabet {
   margin-top: 20px;
-  width: 300px;
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   gap: 10px;
@@ -25,22 +25,18 @@
   align-items: center;
 }
 
+.alpha {
+  background: lightgrey;
+}
+
 .correct {
   background: lightgreen;
 }
 
 .wrong {
-  background: lightgrey;
-}
-
-.missplaced {
-  background: lightyellow;
-}
-
-.used {
   background: grey;
 }
 
-.unused {
-  background: lightgrey;
+.missplaced {
+  background: yellow;
 }
